@@ -27,8 +27,9 @@ namespace {
 		Graphics4::setIndexBuffer(*indices);
 		Graphics4::drawIndexedVertices();
 
-		Graphics4::end();
-		
+		Graphics4::end(0);
+		Graphics4::swapBuffers(0);
+
 		Graphics4::begin(1);
 		Graphics4::clear(Graphics4::ClearColorFlag);
 
@@ -37,9 +38,9 @@ namespace {
 		Graphics4::setIndexBuffer(*indices);
 		Graphics4::drawIndexedVertices();
 
-		Graphics4::end();
+		Graphics4::end(1);
 
-		Graphics4::swapBuffers();
+		Graphics4::swapBuffers(1);
 	}
 }
 
