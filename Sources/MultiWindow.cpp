@@ -19,8 +19,7 @@ namespace {
 	Graphics4::IndexBuffer* indices;
 
 	void update() {
-		printf("update\n");
-		Graphics4::begin();
+		Graphics4::begin(0);
 		Graphics4::clear(Graphics4::ClearColorFlag);
 
 		Graphics4::setPipeline(pipeline);
@@ -29,17 +28,28 @@ namespace {
 		Graphics4::drawIndexedVertices();
 
 		Graphics4::end();
+		
+		Graphics4::begin(1);
+		Graphics4::clear(Graphics4::ClearColorFlag);
+
+		Graphics4::setPipeline(pipeline);
+		Graphics4::setVertexBuffer(*vertices);
+		Graphics4::setIndexBuffer(*indices);
+		Graphics4::drawIndexedVertices();
+
+		Graphics4::end();
+
 		Graphics4::swapBuffers();
 	}
 }
 
 int kore(int argc, char** argv) {
-	Kore::System::setName("Shader");
+	Kore::System::setName("MultiWindow");
 	Kore::System::setup();
 	Kore::WindowOptions options;
-	options.title = "Shader";
-	options.width = 1024;
-	options.height = 768;
+	options.title = "Window 1";
+	options.width = 800;
+	options.height = 600;
 	options.x = 100;
 	options.y = 100;
 	options.targetDisplay = -1;
@@ -49,6 +59,20 @@ int kore(int argc, char** argv) {
 	options.rendererOptions.textureFormat = 0;
 	options.rendererOptions.antialiasing = 0;
 	Kore::System::initWindow(options);
+
+	options.title = "Window 2";
+	options.width = 800;
+	options.height = 600;
+	options.x = 1000;
+	options.y = 100;
+	options.targetDisplay = -1;
+	options.mode = WindowMode::WindowModeWindow;
+	options.rendererOptions.depthBufferBits = 16;
+	options.rendererOptions.stencilBufferBits = 8;
+	options.rendererOptions.textureFormat = 0;
+	options.rendererOptions.antialiasing = 0;
+	Kore::System::initWindow(options);
+
 	Kore::System::setCallback(update);
 
 	FileReader vs("shader.vert");
