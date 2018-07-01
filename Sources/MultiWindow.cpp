@@ -17,12 +17,14 @@ namespace {
 	Graphics4::PipelineState* pipeline;
 	Graphics4::VertexBuffer* vertices;
 	Graphics4::IndexBuffer* indices;
+	Graphics4::ConstantLocation color;
 
 	void update() {
 		Graphics4::begin(0);
 		Graphics4::clear(Graphics4::ClearColorFlag);
 
 		Graphics4::setPipeline(pipeline);
+		Graphics4::setFloat3(color, vec3(1.0f, 0.0f, 0.0f));
 		Graphics4::setVertexBuffer(*vertices);
 		Graphics4::setIndexBuffer(*indices);
 		Graphics4::drawIndexedVertices();
@@ -34,6 +36,7 @@ namespace {
 		Graphics4::clear(Graphics4::ClearColorFlag);
 
 		Graphics4::setPipeline(pipeline);
+		Graphics4::setFloat3(color, vec3(0.0f, 0.0f, 1.0f));
 		Graphics4::setVertexBuffer(*vertices);
 		Graphics4::setIndexBuffer(*indices);
 		Graphics4::drawIndexedVertices();
@@ -88,6 +91,8 @@ int kore(int argc, char** argv) {
 	pipeline->inputLayout[0] = &structure;
 	pipeline->inputLayout[1] = nullptr;
 	pipeline->compile();
+
+	color = pipeline->getConstantLocation("color");
 
 	vertices = new Graphics4::VertexBuffer(3, structure);
 	float* v = vertices->lock();
