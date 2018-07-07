@@ -4,6 +4,7 @@
 #include <Kore/Graphics4/Graphics.h>
 #include <Kore/Graphics4/PipelineState.h>
 #include <Kore/Graphics4/Shader.h>
+#include <Kore/Input/Keyboard.h>
 #include <Kore/System.h>
 #include <limits>
 #include <stdlib.h>
@@ -18,64 +19,52 @@ namespace {
 	Graphics4::VertexBuffer* vertices;
 	Graphics4::IndexBuffer* indices;
 	Graphics4::ConstantLocation color;
+	Window* window;
 
 	void update() {
 		Graphics4::begin(0);
 		Graphics4::clear(Graphics4::ClearColorFlag);
-
 		Graphics4::setPipeline(pipeline);
 		Graphics4::setFloat3(color, vec3(1.0f, 0.0f, 0.0f));
 		Graphics4::setVertexBuffer(*vertices);
 		Graphics4::setIndexBuffer(*indices);
 		Graphics4::drawIndexedVertices();
-
 		Graphics4::end(0);
-		Graphics4::swapBuffers(0);
 
 		Graphics4::begin(1);
 		Graphics4::clear(Graphics4::ClearColorFlag);
-
 		Graphics4::setPipeline(pipeline);
 		Graphics4::setFloat3(color, vec3(0.0f, 0.0f, 1.0f));
 		Graphics4::setVertexBuffer(*vertices);
 		Graphics4::setIndexBuffer(*indices);
 		Graphics4::drawIndexedVertices();
-
 		Graphics4::end(1);
 
-		Graphics4::swapBuffers(1);
+		Graphics4::swapBuffers();
+	}
+
+	void keyUp(Kore::KeyCode key) {
+		if (key == KeyEscape) {
+			System::stop();
+		}
 	}
 }
 
 int kore(int argc, char** argv) {
-	Kore::System::setName("MultiWindow");
-	Kore::System::setup();
 	Kore::WindowOptions options;
 	options.title = "Window 1";
-	options.width = 800;
-	options.height = 600;
 	options.x = 100;
 	options.y = 100;
-	options.targetDisplay = -1;
-	options.mode = WindowMode::WindowModeWindow;
-	options.rendererOptions.depthBufferBits = 16;
-	options.rendererOptions.stencilBufferBits = 8;
-	options.rendererOptions.textureFormat = 0;
-	options.rendererOptions.antialiasing = 0;
-	Kore::System::initWindow(options);
+	window = Kore::System::init("MultiWindow", 800, 600, &options);
 
 	options.title = "Window 2";
 	options.width = 800;
 	options.height = 600;
 	options.x = 1000;
 	options.y = 100;
-	options.targetDisplay = -1;
-	options.mode = WindowMode::WindowModeWindow;
-	options.rendererOptions.depthBufferBits = 16;
-	options.rendererOptions.stencilBufferBits = 8;
-	options.rendererOptions.textureFormat = 0;
-	options.rendererOptions.antialiasing = 0;
-	Kore::System::initWindow(options);
+	Kore::Window::create(&options);
+
+	Kore::Keyboard::the()->KeyUp = keyUp;
 
 	Kore::System::setCallback(update);
 
